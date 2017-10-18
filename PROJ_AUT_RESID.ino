@@ -4,6 +4,8 @@ int LedYellow
 int LedGreen
 int BotãoLâmpada
 int BotãoPortão
+int estadoBotãoL = LOW;
+int estadoBotãoP = LOW;
 
 #include <Servo.h>
 Servo myservo;
@@ -25,6 +27,11 @@ pinMode(BotãoPortão, INPUT);
 }
 
 void loop() {
+estadoBotãoL = digitalRead(BotãoLâmpada);
+
+estadoBotãoP = digitalRead(BotãoPortão);
+
+
 
 
 }
