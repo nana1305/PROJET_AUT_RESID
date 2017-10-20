@@ -14,11 +14,11 @@ int ultimoEstadoBotao = LOW;
 Servo microServo;
 int pos = 0;
 bool portaoAberto = false;
+bool lampadaAcesa = false;
 
 #include <SPI.h>
 #include <UIPEthernet.h>
 #include <utility/logging.h>
-
 
 
 void setup() {
@@ -54,9 +54,9 @@ void loop() {
   estadoBotaoL = digitalRead (BotaoLampada);
   if (estadoBotaoL == HIGH) {
     if (ultimoEstadoBotao == HIGH) {
-      digitalWrite(LedLampada, LOW);
+      acendeApagaLampada(false);
     } else {
-      digitalWrite(LedLampada, HIGH);
+      acendeApagaLampada(true);
     }
 
     if (ultimoEstadoBotao == HIGH) {
@@ -72,6 +72,7 @@ void loop() {
 void abreFechaPortao(bool abre) {
   if (abre == true) {
     if (portaoAberto == false) {
+      digitalWrite (LedLampada, HIGH);
       Serial.println("abre == true");
       for (int pos = 30; pos <= 160; pos++) {
         microServo.write(pos);
@@ -87,6 +88,23 @@ void abreFechaPortao(bool abre) {
         delay(10);
       }
       portaoAberto = false;
+    }
+  }
+}
+void acendeApagaLampada(bool acende) {
+  if (acende == true) {
+    if (lampadaAcesa == false) {
+      Serial.println("acende == true");
+      digitalWrite(LedLampada, HIGH);
+      lampadaAcesa = true;
+    }
+  }
+
+  else {
+    if (lampadaAcesa == true) {
+      Serial.println("acende == false");
+      digitalWrite(LedLampada, LOW);
+      lampadaAcesa = false;
     }
   }
 }
