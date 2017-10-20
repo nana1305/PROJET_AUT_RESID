@@ -6,12 +6,12 @@ const int BotaoLampada = 4;
 const int BotaoPortao = 3;
 int estadoBotaoL = LOW;
 int estadoBotaoP = LOW;
-int estadoServoMotor = LOW;
-int ultimoEstadoServoMotor = HIGH;
+int ultimoEstadoServoMotor = 30;
 
 #include <Servo.h>
 Servo microServo;
 int pos = 0;
+bool portaoAberto = false;
 
 #include <SPI.h>
 #include <UIPEthernet.h>
@@ -27,23 +27,49 @@ void setup() {
   pinMode(BotaoLampada, INPUT);
   pinMode(BotaoPortao, INPUT);
   microServo.attach(6);
+  microServo.write(30);
 }
 
 void loop() {
   estadoBotaoL = digitalRead(BotaoLampada);
   estadoBotaoP = digitalRead(BotaoPortao);
-  ultimoEstadoServoMotor = digitalRead(microServo);
+  
 
   if (estadoBotaoP == HIGH) {
-    if (estadoServoMotor == 50) {
-      microServo.write(130);
-      delay(15);
+    if (ultimoEstadoServoMotor == 30) {
+      abreFechaPortao(true);
+      ultimoEstadoServoMotor = 160;
+      delay (1000);
+    } else {
+      abreFechaPortao(false);
+      ultimoEstadoServoMotor = 30;
+      delay (1000);
     }
+    delay (1000);
+    Serial.println("estadoBotaoP == HIGH");
+
   }
-  else if (estadoBotaoP == HIGH) {
-    if (ultimoEstadoServoMotor == 130) {
-      microServo.write(50);
-      delay(15);
+}
+
+
+void abreFechaPortao(bool abre) {
+  if (abre == true) {
+    if (portaoAberto == false) {
+      Serial.println("abre == true");
+      for (int pos = 30; pos <= 160; pos++) {
+        microServo.write(pos);
+        delay(10);
+      }
+      portaoAberto = true;
+    }
+  } else {
+    if (portaoAberto == true) {
+      Serial.println("abre == false");
+      for (int pos = 160; pos >= 30; pos--) {
+        microServo.write(pos);
+        delay(10);
+      }
+      portaoAberto = false;
     }
   }
 }
