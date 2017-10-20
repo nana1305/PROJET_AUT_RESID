@@ -7,6 +7,8 @@ const int BotaoPortao = 3;
 int estadoBotaoL = LOW;
 int estadoBotaoP = LOW;
 int ultimoEstadoServoMotor = 30;
+int ultimoEstadoBotao = LOW;
+
 
 #include <Servo.h>
 Servo microServo;
@@ -33,7 +35,7 @@ void setup() {
 void loop() {
   estadoBotaoL = digitalRead(BotaoLampada);
   estadoBotaoP = digitalRead(BotaoPortao);
-  
+
 
   if (estadoBotaoP == HIGH) {
     if (ultimoEstadoServoMotor == 30) {
@@ -49,8 +51,23 @@ void loop() {
     Serial.println("estadoBotaoP == HIGH");
 
   }
-}
+  estadoBotaoL = digitalRead (BotaoLampada);
+  if (estadoBotaoL == HIGH) {
+    if (ultimoEstadoBotao == HIGH) {
+      digitalWrite(LedLampada, LOW);
+    } else {
+      digitalWrite(LedLampada, HIGH);
+    }
 
+    if (ultimoEstadoBotao == HIGH) {
+      ultimoEstadoBotao = LOW;
+
+    } else {
+      ultimoEstadoBotao = HIGH;
+    }
+    delay(1000);
+  }
+}
 
 void abreFechaPortao(bool abre) {
   if (abre == true) {
